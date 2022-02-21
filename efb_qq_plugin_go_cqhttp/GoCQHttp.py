@@ -142,7 +142,7 @@ class GoCQHttp(BaseClient):
             elif msg_type == "reply":
                 ref_user = self.get_user_info(msg_data["qq"])
                 main_text = (
-                    f'「{ref_user["remark"]}（{ref_user["nickname"]}）：{msg_data["text"]}」\n'
+                    f'「【{ref_user["remark"]}】❨{ref_user["nickname"]}❩➤{msg_data["text"]}」\n'
                     "- - - - - - - - - - - - - - -\n"
                 )
             else:
@@ -234,9 +234,9 @@ class GoCQHttp(BaseClient):
         def handle_group_increase_msg(context):
             context["event_description"] = self._("\u2139 Group Member Increase Event")
             if (context["sub_type"]) == "invite":
-                text = self._("{nickname}({context[user_id]}) joined the group({group_name}) via invitation")
+                text = self._("【{nickname}】❨{context[user_id]}❩ 加入了此群({group_name}) via invitation")
             else:
-                text = self._("{nickname}({context[user_id]}) joined the group({group_name})")
+                text = self._("【{nickname}】❨{context[user_id]}❩ 加入了此群({group_name})")
 
             original_group = self.get_group_info(context["group_id"], False)
             group_name = context["group_id"]
@@ -260,12 +260,12 @@ class GoCQHttp(BaseClient):
                 group_name = original_group["group_name"]
             text = ""
             if context["sub_type"] == "kick_me":
-                text = self._("You've been kicked from the group({})").format(group_name)
+                text = self._("你被踢出了此群({})").format(group_name)
             else:
                 if context["sub_type"] == "leave":
-                    text = self._("{nickname}({context[user_id]}) quited the group({group_name})")
+                    text = self._("【{nickname}】❨{context[user_id]}❩ 退出了此群({group_name})")
                 else:
-                    text = self._("{nickname}({context[user_id]}) was kicked from the group({group_name})")
+                    text = self._("【{nickname}】❨{context[user_id]}❩ 被踢出此群({group_name})")
                 text = text.format(
                     nickname=self.get_stranger_info(context["user_id"])["nickname"],
                     context=context,
@@ -280,7 +280,7 @@ class GoCQHttp(BaseClient):
             context["uid_prefix"] = "offline_file"
             file_info_msg = self._("Filename: {file[name]}\n" "File size: {file[size]}").format(file=context["file"])
             user = self.get_user_info(context["user_id"])
-            text = self._("{remark}({nickname}) uploaded a file to you\n")
+            text = self._("【{remark}】❨{nickname}❩ 给你上传了一个文件\n")
             text = text.format(remark=user["remark"], nickname=user["nickname"]) + file_info_msg
             context["message"] = text
             self.send_msg_to_master(context)
@@ -304,7 +304,7 @@ class GoCQHttp(BaseClient):
             )
             member_info = self.get_user_info(context["user_id"], group_id=context["group_id"])["in_group_info"]
             group_card = member_info["card"] if member_info["card"] != "" else member_info["nickname"]
-            text = self._("{member_card}({context[user_id]}) uploaded a file to group({group_name})\n")
+            text = self._("{member_card}({context[user_id]}) 上传了一个文件到群({group_name})\n")
             text = text.format(member_card=group_card, context=context, group_name=group_name) + file_info_msg
             context["message"] = text
             self.send_efb_group_notice(context)
@@ -322,7 +322,7 @@ class GoCQHttp(BaseClient):
         def handle_friend_add_msg(context):
             context["event_description"] = self._("\u2139 New Friend Event")
             context["uid_prefix"] = "friend_add"
-            text = self._("{nickname}({context[user_id]}) has become your friend!")
+            text = self._("【{nickname}】❨{context[user_id]}❩ 成为你的好友!")
             text = text.format(
                 nickname=self.get_stranger_info(context["user_id"])["nickname"],
                 context=context,
@@ -336,8 +336,8 @@ class GoCQHttp(BaseClient):
             context["event_description"] = self._("\u2139 New Friend Request")
             context["uid_prefix"] = "friend_request"
             text = self._(
-                "{nickname}({context[user_id]}) wants to be your friend!\n"
-                "Here is the verification comment:\n"
+                "【{nickname}】❨{context[user_id]}❩ 想成为你的好友!\n"
+                "以下为验证请求:\n"
                 "{context[comment]}"
             )
             text = text.format(
@@ -381,17 +381,17 @@ class GoCQHttp(BaseClient):
             msg.type = MsgType.Text
             name = ""
             if not self.get_friend_remark(context["user_id"]):
-                name = "{}({})[{}] ".format(
+                name = "【{}】❨{}❩[{}] ".format(
                     self.get_stranger_info(context["user_id"])["nickname"],
                     self.get_friend_remark(context["user_id"]),
                     context["user_id"],
                 )
             else:
-                name = "{}[{}] ".format(
+                name = "【{}】[{}] ".format(
                     self.get_stranger_info(context["user_id"])["nickname"],
                     context["user_id"],
                 )
-            msg.text = "{} wants to join the group {}({}). \nHere is the comment: {}".format(
+            msg.text = "【{}】 想加入群 {}({}). \nHere is the comment: {}".format(
                 name, group_name, context["group_id_orig"], context["comment"]
             )
             msg.commands = MessageCommands(
