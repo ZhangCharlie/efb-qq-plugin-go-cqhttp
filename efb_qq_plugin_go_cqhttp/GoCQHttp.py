@@ -391,7 +391,7 @@ class GoCQHttp(BaseClient):
                     self.get_stranger_info(context["user_id"])["nickname"],
                     context["user_id"],
                 )
-            msg.text = "【{}】 想加入群 {}({}). \nHere is the comment: {}".format(
+            msg.text = "【{}】 想加入群 {}({}). \n以下为验证请求: {}".format(
                 name, group_name, context["group_id_orig"], context["comment"]
             )
             msg.commands = MessageCommands(
