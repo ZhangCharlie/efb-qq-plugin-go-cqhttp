@@ -142,7 +142,7 @@ class GoCQHttp(BaseClient):
             elif msg_type == "reply":
                 ref_user = self.get_user_info(msg_data["qq"])
                 main_text = (
-                    f'「【{ref_user["remark"]}】❨{ref_user["nickname"]}❩➤{msg_data["text"]}」\n'
+                    f'「【{ref_user["remark"]}】❨{ref_user["nickname"]}❩:\n {msg_data["text"]}」\n'
                     "- - - - - - - - - - - - - - -\n"
                 )
             else:
@@ -280,7 +280,7 @@ class GoCQHttp(BaseClient):
             context["uid_prefix"] = "offline_file"
             file_info_msg = self._("Filename: {file[name]}\n" "File size: {file[size]}").format(file=context["file"])
             user = self.get_user_info(context["user_id"])
-            text = self._("【{remark}】❨{nickname}❩ 给你上传了一个文件\n")
+            text = self._("【{remark}】❨{nickname}❩ 上传了一个文件\n")
             text = text.format(remark=user["remark"], nickname=user["nickname"]) + file_info_msg
             context["message"] = text
             self.send_msg_to_master(context)
@@ -391,7 +391,7 @@ class GoCQHttp(BaseClient):
                     self.get_stranger_info(context["user_id"])["nickname"],
                     context["user_id"],
                 )
-            msg.text = "【{}】 想加入群 {}({}). \nHere is the comment: {}".format(
+            msg.text = "【{}】 想加入群 {}({}). \n以下为验证请求: {}".format(
                 name, group_name, context["group_id_orig"], context["comment"]
             )
             msg.commands = MessageCommands(

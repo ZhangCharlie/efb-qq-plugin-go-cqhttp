@@ -41,7 +41,7 @@ classifiers = [
 dynamic = ["version"]
 
 [project.urls]
-homepage = "https://github.com/ehForwarderBot/efb-qq-plugin-go-cqhttp"
+homepage = "https://github.com/ZhangCharlie/efb-qq-plugin-go-cqhttp"
 
 [project.entry-points."ehforwarderbot.qq.plugin"]
 GoCQHttp = "efb_qq_plugin_go_cqhttp:GoCQHttp"
